@@ -1,0 +1,102 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+<script src="../static/js/jquery.min.js" type="text/javascript" charset='utf-8'></script>
+
+<script type="text/javascript">
+    // 初始化界面
+    $(function () {
+        $('#li_1').attr('class', '');
+        $('#li_2').attr('class', '');
+
+
+        // 判断是否登录
+        $.get('http://127.0.0.1:5000/check_login', {},
+            function (data) {
+                console.log(data);
+                if (data['login'] === false) {
+                    $('#show_login_reg').show();
+                    $('#index_img').css('height', '71%');
+                }
+                else {
+                    $('#login_register').hide();
+                    $('#info_box').attr('class', 'col-lg-12');
+                    $('#info_box').css('font-size', '20px');
+                }
+            }
+        );
+
+        $("#reg_submit").click(function () {
+            const name = $("#name").val();
+            const password = $("#password").val();
+
+            console.log(name);
+            console.log(password);
+
+            if ((name === undefined) || (password === undefined) || (name === '') || (password === '')) {
+                alert('字段不能为空！');
+                return
+            }
+
+            $.get('http://127.0.0.1:5000/register/' + name + '/' + password, {},
+                function (data) {
+                    alert(data['info'])
+                }
+            );
+        });
+
+        $("#login_submit").click(function () {
+            const name = $("#name").val();
+            const password = $("#password").val();
+
+            console.log(name);
+            console.log(password);
+
+            if ((name === undefined) || (password === undefined) || (name === '') || (password === '')) {
+                alert('login_submit字段不能为空！');
+                return
+            }
+
+            $.get('http://127.0.0.1:5000/login/' + name + '/' + password, {},
+                function (data) {
+                    alert(data['info']);
+                    if (data['status'] == 'ok') {
+                        window.location.href = "/"
+                    }
+                }
+            );
+        });
+
+    });
+</script>
+
+<div class="container">
+    <div class="jumbotron" id="show_login_reg">
+        <div style="height: 150px;">
+            <div class="row">
+                <div class="col-lg-6" id="info_box">
+                    <h4>基于大数据的NBA球员数据分析及预测系统</h4>
+                    <p style="font-size: 18px;">利用网络爬虫抓取 NBA 球员的所有赛季的数据，包括三分、篮板等各项参数，对每位球员的精细分析和数据可视化，不仅能帮助球队科学高效地分析球员优劣，为球队排兵布阵提供依据，还能让伟大的运动传奇更具商业价值。</p>
+                </div>
+                <div class="col-lg-6" style="font-size: 18px;" id="login_register">
+                    <h4>注册/登录</h4>
+                    <p><span style="font-size: 18px;">用户名：</span><input id="name" style="width: 70%;" type="text"></p>
+                    <p><span style="font-size: 18px;">密&nbsp;&nbsp;&nbsp;码：</span><input id="password" type="password" style="width: 70%;"></p>
+                    <p>
+                        <button class="btn btn-primary" id="reg_submit">注册&raquo;</button>
+                        <button class="btn btn-primary" id="login_submit">登录&raquo;</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="">
+        <div class="col-sm-12">
+            <img src="/static/img/index_logo.jpeg"
+                 style="width: 100%; height: 500px;" id="index_img">
+        </div>
+    </div>
+</div>
+
+{% endblock %}

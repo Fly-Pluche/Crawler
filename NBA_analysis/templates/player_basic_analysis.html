@@ -1,0 +1,597 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<script src="../static/js/jquery.min.js" type="text/javascript" charset='utf-8'></script>
+<script src="../static/js/echarts.js" charset='utf-8'></script>
+<script src="../static/js/echarts-wordcloud.min.js" type="text/javascript" charset='utf-8'></script>
+
+<script type="text/javascript">
+    // 初始化界面
+    $(function () {
+        $('#li_1').attr('class', 'active');            //设置li_1的class为active（li_1为球员精细化分析）
+        $('#li_2').attr('class', '');
+
+
+        // 判断是否登录
+        $.get('http://127.0.0.1:5000/check_login', {},
+            function (data) {
+                console.log(data);
+                if (data['login'] === false) {
+                    window.location.href = '/'
+                }
+            }
+        );
+
+        $.get('/get_all_players', {},
+            function (player) {
+                for (var i = 0; i < player.length; i++) {
+                    $('#player').append('<option value="' + player[i] + '">' + player[i] + '</option>');
+                }
+            }
+        );
+
+        $('#submit_predict').click(function (args) {
+
+            const player = $('#player').val();
+
+            $.get('/player_statistic/' + player, {},
+
+
+                function (data) {
+                    var dom = document.getElementById("main1");
+                    var myChart = echarts.init(dom);            // 基于准备好的dom，初始化echarts实例
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '不同赛季场均得分的分布直方图'
+                        },
+                        tooltip: {
+                            trigger: 'axis',     //触发类型：坐标轴
+                            axisPointer: {
+                                type: 'shadow'    //指示器类型：阴影
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true   //刻度标签
+                        },
+                        yAxis: {
+                            name: '场均得分',
+                            type: 'value',
+                            boundaryGap: [0, 0.01]
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0     //坐标轴刻度标签的显示间隔
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场均得分',
+                                type: 'bar',
+                                itemStyle: {
+                                    color: '#6a6eca'
+                                },
+                                data: data['场均得分']
+                            },
+                            {
+                                type: 'line',
+                                lineStyle: {
+                                    color: '#DF01D7',
+                                    width: 3
+                                },
+                                data: data['场均得分']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);    // 使用刚指定的配置项和数据显示图表
+                    }
+
+
+                    dom = document.getElementById("main2");
+                    myChart = echarts.init(dom);
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '不同赛季参加场数的分布直方图'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '场数',
+                            type: 'value',
+                            boundaryGap: [0, 0.01]
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场数',
+                                type: 'bar',
+                                itemStyle: {
+                                    color: '#81F781'
+                                },
+                                data: data['场数']
+                            },
+                            {
+                                type: 'line',
+                                lineStyle: {
+                                    color: '#DF01D7',
+                                    width: 3
+                                },
+                                data: data['场数']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+
+                    dom = document.getElementById("main3");
+                    myChart = echarts.init(dom);
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '不同赛季场均篮板得分的分布直方图'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '得分',
+                            type: 'value',
+                            boundaryGap: [0, 0.01]
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场均篮板',
+                                type: 'bar',
+                                itemStyle: {
+                                    color: '#81BEF7'
+                                },
+                                data: data['场均篮板']
+                            },
+                            {
+                                type: 'line',
+                                lineStyle: {
+                                    color: '#DF01D7',
+                                    width: 3
+                                },
+                                data: data['场均篮板']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+
+                    dom = document.getElementById("main4");
+                    myChart = echarts.init(dom);
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '不同赛季场均助攻得分的分布直方图'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '得分',
+                            type: 'value',
+                            boundaryGap: [0, 0.01]
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场均助攻',
+                                type: 'bar',
+                                itemStyle: {
+                                    color: '#81BEF7'
+                                },
+                                data: data['场均助攻']
+                            },
+                            {
+                                type: 'line',
+                                lineStyle: {
+                                    color: '#DF01D7',
+                                    width: 3
+                                },
+                                data: data['场均助攻']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+
+                    dom = document.getElementById("main5");
+                    myChart = echarts.init(dom);
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '不同赛季场均抢断分的分布直方图'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '得分',
+                            type: 'value',
+                            boundaryGap: [0, 0.01]
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场均抢断',
+                                type: 'bar',
+                                itemStyle: {
+                                    color: '#81BEF7'
+                                },
+                                data: data['场均抢断']
+                            },
+                            {
+                                type: 'line',
+                                lineStyle: {
+                                    color: '#DF01D7',
+                                    width: 3
+                                },
+                                data: data['场均抢断']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+
+                    dom = document.getElementById("main6");
+                    myChart = echarts.init(dom);
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '不同赛季场均盖帽分的分布直方图'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '得分',
+                            type: 'value',
+                            boundaryGap: [0, 0.01]
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场均盖帽',
+                                type: 'bar',
+                                itemStyle: {
+                                    color: '#81BEF7'
+                                },
+                                data: data['场均盖帽']
+                            },
+                            {
+                                type: 'line',
+                                lineStyle: {
+                                    color: '#DF01D7',
+                                    width: 3
+                                },
+                                data: data['场均盖帽']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+
+                    dom = document.getElementById("main7");
+                    myChart = echarts.init(dom);
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '不同赛季平均上场时间的分布直方图'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '上场时间/分钟',
+                            type: 'value',
+                            boundaryGap: [0, 0.01]
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0
+                            }
+                        },
+                        series: [
+                            {
+                                type: 'line',
+                                lineStyle: {
+                                    color: '#DF01D7',
+                                    width: 3
+                                },
+                                data: data['分钟']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+
+                    var dom = document.getElementById("main8");
+                    var myChart = echarts.init(dom);
+                    var series_data = [];
+                    for (var i = 0; i < data['效率'].length; i++) {
+                        series_data.push({value: data['效率'][i], name: data['赛季'][i]})
+                    }
+                    var option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '不同赛季平均效率得分的分布饼状图'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                        },
+                        series: [
+                            {
+                                name: '效率得分',
+                                type: 'pie',
+                                radius: '70%',
+                                center: ['50%', '50%'],
+                                data: series_data,
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+
+                    dom = document.getElementById("main9");
+                    myChart = echarts.init(dom);
+                    option = {
+                      title: {
+                            left: 'center',
+                            text: player + '不同赛季三分、罚球、进攻、防守的分布直方图'
+                        },
+                      tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                          type: 'shadow'
+                        }
+                      },
+                      legend: {
+                        top: '10%'
+                      },
+                      grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                      },
+                      xAxis: {
+                        name: '赛季',
+                        type: 'category',
+                        data: data['赛季']
+                      },
+                      yAxis: {
+                        name: '得分',
+                        type: 'value',
+                        boundaryGap: [0, 0.01]
+
+                      },
+                      series: [
+                        {
+                          name: '三分',
+                          type: 'bar',
+                          data: data['三分']
+                        },
+                        {
+                          name: '罚球',
+                          type: 'bar',
+                          data: data['罚球']
+                        },
+                        {
+                          name: '进攻',
+                          type: 'bar',
+                          data: data['进攻']
+                        },
+                        {
+                          name: '防守',
+                          type: 'bar',
+                          data: data['防守']
+                        }
+                      ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+                }
+            );
+        });
+   });
+
+
+
+
+</script>
+
+<div class="container">
+    <div class="row" style="margin-top:40px;">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-6">
+            <img src="/static/img/index_logo.jpeg"
+                 style="height: 180px;"/>
+        </div>
+        <div class="col-lg-2"></div>
+    </div>
+    <div class="row" style="margin-top:20px; font-size: 22px;">
+        <div class="col-sm-12" style="margin-bottom: 20px;">
+            <span>选择球员：</span>
+            <select class="combobox" id="player" style="margin-left: 10px; margin-right: 20px; width: 200px;">
+            </select>
+
+            <button class="btn btn-success" id="submit_predict" style="margin-left: 20px;">分析</button>
+        </div>
+    </div>
+    <h3 class="page-header">每个赛季参加场数与平均得分分布情况</h3>
+</div>
+<div class="row placeholders" style="margin-top: 2px; margin-left: 20px; margin-right: 20px;">
+    <div class="col-xs-6 placeholder" style="height:400px;" id="main1"></div>
+    <div class="col-xs-6 placeholder" style="height:400px;" id="main2"></div>
+</div>
+<div class="container">
+    <h3 class="page-header">每个赛季场均篮板、助攻、抢断和盖帽的得分分布情况</h3>
+</div>
+<div class="row placeholders" style="margin-top: 2px; margin-left: 20px; margin-right: 20px;">
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main3"></div>
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main4"></div>
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main5"></div>
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main6"></div>
+</div>
+
+<div class="container">
+    <h3 class="page-header">每个赛季平均上场时间和效率的分布情况</h3>
+</div>
+<div class="row placeholders" style="margin-top: 2px; margin-left: 20px; margin-right: 20px;">
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main7"></div>
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main8"></div>
+</div>
+
+<div class="container">
+    <h3 class="page-header">每个赛季三分、罚球、进攻、防守的分布情况</h3>
+</div>
+<div class="row placeholders" style="margin-top: 2px; margin-left: 20px; margin-right: 20px;">
+    <div class="col-xs-12 placeholder" style="height:600px;" id="main9"></div>
+</div>
+
+{% endblock %}

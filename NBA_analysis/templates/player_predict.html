@@ -1,0 +1,388 @@
+{% extends "layout.html" %}
+{% block content %}
+<script src="../static/js/jquery.min.js" type="text/javascript" charset='utf-8'></script>
+<script src="../static/js/echarts.js" charset='utf-8'></script>
+<script type="text/javascript">
+    // 初始化界面
+    $(function () {
+        $('#li_1').attr('class', '');
+        $('#li_2').attr('class', 'active');                   //设置li_2的class为active（li_2为球员未来表现预测）
+
+
+        // 判断是否登录
+        $.get('http://127.0.0.1:5000/check_login', {},
+            function (data) {
+                console.log(data);
+                if (data['login'] === false) {
+                    window.location.href = '/'
+                }
+            }
+        );
+
+        $.get('/get_all_players', {},
+            function (player) {
+                for (var i = 0; i < player.length; i++) {
+                    $('#player').append('<option value="' + player[i] + '">' + player[i] + '</option>');
+                }
+            }
+        );
+
+        $('#submit_predict').click(function (args) {
+            const player = $('#player').val();
+            $('#items').empty();
+            $.get('/future_predict/' + player, {},
+                function (data) {
+                    var dom = document.getElementById("main1");
+                    var myChart = echarts.init(dom);
+
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '的场均得分未来发展趋势预测',
+                            subtext: '红色柱为预测的2022赛季场均得分'
+
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '得分',
+                            type: 'value',
+                            boundaryGap: [0, 0.01],
+                            min: function(value){     //动态设置y轴最小值
+                                return 0;
+                            },
+                            max:function(value){
+                                return parseInt(value.max + 5);         //动态设置y轴最大值
+                            }
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0,
+                                rotate: 32
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场均得分',
+                                type: 'bar',
+                                data: data['场均得分'],
+                                itemStyle: {
+                                    normal: {
+                                        color: function(params) {
+                                            if (params.dataIndex == data['场均得分'].length - 1) {      //如果数值序列等于场均得分数组的长度-1则返回红色（标注出红色列为预测结果）
+                                                return '#FF0000'
+                                            } else {
+                                                return '#D0A9F5'
+                                            }
+                                        },
+                                    }
+                                }
+                            },
+                            {
+                                name: '场均得分',
+                                type: 'line',
+                                itemStyle: {
+                                    color: '#DF3A01'
+                                },
+                                lineStyle: {
+                                    width: 3
+                                },
+                                data: data['场均得分']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+
+                    var dom = document.getElementById("main2");
+                    var myChart = echarts.init(dom);
+
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '的场均篮板未来发展趋势预测',
+                            subtext: '红色柱为预测的2022赛季场均篮板'
+
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '得分',
+                            type: 'value',
+                            boundaryGap: [0, 0.01],
+                            min: function(value){
+                                return 0;
+                            },
+                            max:function(value){
+                                return parseInt(value.max + 5);
+                            }
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0,
+                                rotate: 32
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场均篮板',
+                                type: 'bar',
+                                data: data['场均篮板'],
+                                itemStyle: {
+                                    normal: {
+                                        color: function(params) {
+                                            if (params.dataIndex == data['场均篮板'].length - 1) {
+                                                return '#FF0000'
+                                            } else {
+                                                return '#0080FF'
+                                            }
+                                        },
+                                    }
+                                }
+                            },
+                            {
+                                name: '场均篮板',
+                                type: 'line',
+                                itemStyle: {
+                                    color: '#DF3A01'
+                                },
+                                lineStyle: {
+                                    width: 3
+                                },
+                                data: data['场均篮板']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+                    var dom = document.getElementById("main3");
+                    var myChart = echarts.init(dom);
+
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '的场均助攻未来发展趋势预测',
+                            subtext: '红色柱为预测的2022赛季场均助攻'
+
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '得分',
+                            type: 'value',
+                            boundaryGap: [0, 0.01],
+                            min: function(value){
+                                return 0;
+                            },
+                            max:function(value){
+                                return parseInt(value.max + 5);
+                            }
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0,
+                                rotate: 32
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场均助攻',
+                                type: 'bar',
+                                data: data['场均助攻'],
+                                itemStyle: {
+                                    normal: {
+                                        color: function(params) {
+                                            if (params.dataIndex == data['场均助攻'].length - 1) {
+                                                return '#FF0000'
+                                            } else {
+                                                return '#FACC2E'
+                                            }
+                                        },
+                                    }
+                                }
+                            },
+                            {
+                                name: '场均助攻',
+                                type: 'line',
+                                itemStyle: {
+                                    color: '#DF3A01'
+                                },
+                                lineStyle: {
+                                    width: 3
+                                },
+                                data: data['场均助攻']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+                    var dom = document.getElementById("main4");
+                    var myChart = echarts.init(dom);
+
+                    option = {
+                        backgroundColor: '#F9F9F9',
+                        title: {
+                            left: 'center',
+                            text: player + '的场均抢断未来发展趋势预测',
+                            subtext: '红色柱为预测的2022赛季场均抢断'
+
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '6%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        yAxis: {
+                            name: '得分',
+                            type: 'value',
+                            boundaryGap: [0, 0.01],
+                            min: function(value){
+                                return 0;
+                            },
+                            max:function(value){
+                                return parseInt(value.max + 1);
+                            }
+                        },
+                        xAxis: {
+                            name: '赛季',
+                            type: 'category',
+                            data: data['赛季'],
+                            axisLabel: {
+                                interval: 0,
+                                rotate: 32
+                            }
+                        },
+                        series: [
+                            {
+                                name: '场均抢断',
+                                type: 'bar',
+                                data: data['场均抢断'],
+                                itemStyle: {
+                                    normal: {
+                                        color: function(params) {
+                                            if (params.dataIndex == data['场均抢断'].length - 1) {
+                                                return '#FF0000'
+                                            } else {
+                                                return '#01DF74'
+                                            }
+                                        },
+                                    }
+                                }
+                            },
+                            {
+                                name: '场均抢断',
+                                type: 'line',
+                                itemStyle: {
+                                    color: '#DF3A01'
+                                },
+                                lineStyle: {
+                                    width: 3
+                                },
+                                data: data['场均抢断']
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+
+                }
+            );
+        });
+
+    });
+
+
+
+</script>
+
+<div class="container">
+    <div class="row" style="margin-top:40px;">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-6">
+            <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg3.donews.com%2Fuploads%2Fimg3%2Fimg_pic_1610593977_9.jpeg&refer=http%3A%2F%2Fimg3.donews.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1654175364&t=145a578d2954c87b00548d5795e882ca"
+                 style="height: 180px;"/>
+            <h2 style="padding-left:-20px;">NBA球员未来发展预测</h2>
+        </div>
+        <div class="col-lg-2"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" style="font-size: 20px; margin-top: 20px; margin-bottom: 20px;">
+            <span>选择球员：</span>
+            <select class="combobox" id="player" style="margin-left: 10px; margin-right: 20px;">
+            </select>
+
+            <button class="btn btn-success" id="submit_predict" style="margin-left: 20px;">检索</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <h3 class="page-header">场均得分、篮板、助攻和抢断得分趋势预测分析<span style="color: #FE2E2E">（注：红色为预测的下一赛季表现）</span></h3>
+    </div>
+</div>
+<div class="row placeholders" style="margin-top: 2px; margin-left: 20px; margin-right: 20px;">
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main1"></div>
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main2"></div>
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main3"></div>
+    <div class="col-xs-6 placeholder" style="height:300px;" id="main4"></div>
+</div>
+{% endblock %}
