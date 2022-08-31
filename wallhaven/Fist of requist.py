@@ -7,5 +7,4 @@ if __name__ == '__main__':
     print(response.text)
     with open('info.html', 'w', encoding='utf-8') as tf:
         tf.write(response.text)
-
     print('over')
