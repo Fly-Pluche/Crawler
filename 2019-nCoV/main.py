@@ -4,13 +4,13 @@ import pandas as pd
 from lxml import etree
 # 读取html文件信息（在真实代码中是爬取的网页信息）
 
-# url = 'http://m.bj.bendibao.com/news/gelizhengce/fengxianmingdan.php?src=baidu#bj'
+# url = 'http://m.bj.bendibao.com/news/gelizhengce/fengxianmingdan.php'
 # # headers = {
 # #     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36 QBCore/4.0.1326.400 QQBrowser/9.0.2524.400 Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2875.116 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) WindowsWechat(0x63010200)'}
 # headers = {
 #     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 Edg/98.0.1108.43"
 # }
-#
+
 # res = requests.get(url, headers=headers)
 # res.encoding = 'utf-8'
 # html = etree.HTML(res.text)

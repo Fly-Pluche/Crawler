@@ -1,0 +1,14 @@
+preposition = ['in','on','with','by','for','at','about','under','of','to','from','within','into','inside','outside','throughout',
+               'without','among','through','during','over','is','are','about','above','across','after','against','along','amid','among','around',
+               'as','at','before','behind','below','beneath','beside','between','beyond','but','by','concerning','considering',
+               'despite','down','during','except','for','from','in','inside','into','like','near','of','off','on','onto','out','outside','over',
+               'past','regarding','round','since','through','throughout','to','toward','under','underneath','until','unto','up',
+               'upon','with','within','without.aboard','according to','across from','ahead of','along with','apart from','around the corner','as for',
+               'as of','as to','aside from','because of','by means of','by way of','close to','due to','except for','far from','for the sake of',
+               'in addition to','in front of','in lieu of','in place of','in spite of','inside of','instead of','near to','next to','on account of',
+               'on behalf of','out of','prior to','pursuant to','regardless of','such as','together with','up against','up to','vis-à-vis','with regard to']
+
+import numpy as np
+preposition = np.unique(preposition)
+
+print(preposition.tolist())

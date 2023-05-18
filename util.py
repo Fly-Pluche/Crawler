@@ -65,3 +65,17 @@ def get_random_user_agent_and_proxies():
 def get_random_user_agent():
     user_agent = random.choice(USER_AGENTS)
     return user_agent
+
+
+
+
+
+
+
+
+
+
+
+
+
+

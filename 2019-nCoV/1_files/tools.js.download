@@ -1,0 +1,51 @@
+
+/**
+ * 判断是否是微信环境
+ * @method isWeiXin
+ * @returns {boolean}  返回当前是否是微信环境
+ */
+function isWeiXin() {
+    var ua = window.navigator.userAgent.toLowerCase();
+    if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * 下载base64图片
+ * @method downloadFile
+ * @param {string} fileName 下载图片名称
+ * @param {string} content basr64链接
+ */
+function downloadFile(fileName, content) {
+    let aLink = document.createElement('a');
+    let blob = this.base64ToBlob(content);
+
+    let evt = document.createEvent("HTMLEvents");
+    evt.initEvent("click", true, true);
+    aLink.download = fileName;
+    aLink.href = URL.createObjectURL(blob);
+    aLink.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window })); //兼容火狐
+}
+
+/**
+ * base64转blob
+ * @method base64ToBlob
+ * @param {string} code base64链接
+ * @return {Blob} Blob对象
+ */
+function base64ToBlob(code) {
+    let parts = code.split(';base64,');
+    let contentType = parts[0].split(':')[1];
+    let raw = window.atob(parts[1]);
+    let rawLength = raw.length;
+
+    let uInt8Array = new Uint8Array(rawLength);
+
+    for (let i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i);
+    }
+    return new Blob([uInt8Array], { type: contentType });
+}

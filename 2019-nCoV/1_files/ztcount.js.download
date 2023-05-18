@@ -1,0 +1,14 @@
+function ztcount(ztname,type){
+	$.ajax({ 
+		type : "get",
+		url:"/news/ztcount.php",
+		data : {  
+			ztname:ztname,
+			type:type,
+			time:new Date().getTime()
+		},
+		success : function(result) {
+		}
+	});
+	
+}
